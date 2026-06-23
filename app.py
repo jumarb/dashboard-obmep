@@ -74,7 +74,7 @@ fig1 = px.line(
     markers=True, line_shape='spline'
 )
 fig1.update_traces(line_color='#2E86AB', line_width=3, marker_size=10)
-fig1.update_layout(plot_bgcolor='white', paper_bgcolor='white')
+fig1.update_layout(plot_bgcolor='white', paper_bgcolor='white', font=dict(color='#222222') )
 fig1.update_yaxes(gridcolor='#EEEEEE')
 st.plotly_chart(fig1, use_container_width=True)
 
@@ -88,7 +88,7 @@ fig2 = px.bar(
     barmode='stack',
     color_discrete_map={'Pública': '#2E86AB', 'Privada': '#E84855'}
 )
-fig2.update_layout(plot_bgcolor='white', paper_bgcolor='white')
+fig2.update_layout(plot_bgcolor='white', paper_bgcolor='white', font=dict(color='#222222'))
 fig2.update_yaxes(gridcolor='#EEEEEE')
 st.plotly_chart(fig2, use_container_width=True)
 
@@ -102,6 +102,6 @@ fig3 = px.bar(
     barmode='stack',
     color_discrete_map={'Feminino': '#E84855', 'Masculino': '#2E86AB'}
 )
-fig3.update_layout(plot_bgcolor='white', paper_bgcolor='white')
+fig3.update_layout(plot_bgcolor='white', paper_bgcolor='white', font=dict(color='#222222'))
 fig3.update_yaxes(gridcolor='#EEEEEE')
 st.plotly_chart(fig3, use_container_width=True)
