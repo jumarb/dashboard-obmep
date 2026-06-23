@@ -74,7 +74,13 @@ fig1 = px.line(
     markers=True, line_shape='spline'
 )
 fig1.update_traces(line_color='#2E86AB', line_width=3, marker_size=10)
-fig1.update_layout(plot_bgcolor='white', paper_bgcolor='white', font=dict(color='#222222') )
+fig1.update_layout(    plot_bgcolor='white',
+    paper_bgcolor='white',
+    font=dict(color='#111111', size=13),
+    xaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111')),
+    yaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111')),
+    legend=dict(font=dict(color='#111111'), title=dict(text='Sexo', font=dict(color='#111111'))),
+    title_font_color='#111111' )
 fig1.update_yaxes(gridcolor='#EEEEEE')
 st.plotly_chart(fig1, use_container_width=True)
 
