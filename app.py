@@ -94,7 +94,13 @@ fig2 = px.bar(
     barmode='stack',
     color_discrete_map={'Pública': '#2E86AB', 'Privada': '#E84855'}
 )
-fig2.update_layout(plot_bgcolor='white', paper_bgcolor='white', font=dict(color='#222222'))
+fig2.update_layout(    plot_bgcolor='white',
+    paper_bgcolor='white',
+    font=dict(color='#111111', size=13),
+    xaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111')),
+    yaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111')),
+    legend=dict(font=dict(color='#111111'), title=dict(text='Sexo', font=dict(color='#111111'))),
+    title_font_color='#111111')
 fig2.update_yaxes(gridcolor='#EEEEEE')
 st.plotly_chart(fig2, use_container_width=True)
 
@@ -108,6 +114,12 @@ fig3 = px.bar(
     barmode='stack',
     color_discrete_map={'Feminino': '#E84855', 'Masculino': '#2E86AB'}
 )
-fig3.update_layout(plot_bgcolor='white', paper_bgcolor='white', font=dict(color='#222222'))
+fig3.update_layout(    plot_bgcolor='white',
+    paper_bgcolor='white',
+    font=dict(color='#111111', size=13),
+    xaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111')),
+    yaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111')),
+    legend=dict(font=dict(color='#111111'), title=dict(text='Sexo', font=dict(color='#111111'))),
+    title_font_color='#111111')
 fig3.update_yaxes(gridcolor='#EEEEEE')
 st.plotly_chart(fig3, use_container_width=True)
