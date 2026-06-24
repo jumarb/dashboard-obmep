@@ -123,3 +123,77 @@ fig3.update_layout(    plot_bgcolor='white',
     title_font_color='#111111')
 fig3.update_yaxes(gridcolor='#EEEEEE')
 st.plotly_chart(fig3, use_container_width=True)
+# ── Gráfico 4 ─────────────────────────────────────────────────────────────────
+por_nivel_edicao = df_filtrado.groupby(['edicao', 'nivel'])['pct_pub'].mean().reset_index()
+por_nivel_edicao['nivel'] = por_nivel_edicao['nivel'].map({
+    1: 'Nível 1',
+    2: 'Nível 2',
+    3: 'Nível 3'
+})
+
+fig4 = px.line(
+    por_nivel_edicao,
+    x='edicao', y='pct_pub',
+    color='nivel',
+    title='Evolução do percentual público por nível',
+    labels={
+        'edicao': 'Edição',
+        'pct_pub': '% de medalhas em escolas públicas',
+        'nivel': 'Nível'
+    },
+    markers=True,
+    line_shape='spline',
+    color_discrete_map={
+        'Nível 1': '#2E86AB',
+        'Nível 2': '#E84855',
+        'Nível 3': '#F4A261',
+    }
+)
+fig4.update_layout(
+    plot_bgcolor='white',
+    paper_bgcolor='white',
+    font=dict(color='#111111', size=13),
+    xaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111')),
+    yaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111'), ticksuffix='%'),
+    legend=dict(font=dict(color='#111111'), title=dict(text='Nível', font=dict(color='#111111'))),
+    title_font_color='#111111',
+)
+fig4.update_yaxes(gridcolor='#EEEEEE', range=[40, 100])
+st.plotly_chart(fig4, use_container_width=True)
+# ── Gráfico 5 ─────────────────────────────────────────────────────────────────
+por_nivel_edicao_priv = df_filtrado.groupby(['edicao', 'nivel'])['pct_priv'].mean().reset_index()
+por_nivel_edicao_priv['nivel'] = por_nivel_edicao_priv['nivel'].map({
+    1: 'Nível 1',
+    2: 'Nível 2',
+    3: 'Nível 3'
+})
+
+fig5 = px.line(
+    por_nivel_edicao_priv,
+    x='edicao', y='pct_priv',
+    color='nivel',
+    title='Evolução do percentual privado por nível',
+    labels={
+        'edicao': 'Edição',
+        'pct_priv': '% de medalhas em escolas privadas',
+        'nivel': 'Nível'
+    },
+    markers=True,
+    line_shape='spline',
+    color_discrete_map={
+        'Nível 1': '#2E86AB',
+        'Nível 2': '#E84855',
+        'Nível 3': '#F4A261',
+    }
+)
+fig5.update_layout(
+    plot_bgcolor='white',
+    paper_bgcolor='white',
+    font=dict(color='#111111', size=13),
+    xaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111')),
+    yaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111'), ticksuffix='%'),
+    legend=dict(font=dict(color='#111111'), title=dict(text='Nível', font=dict(color='#111111'))),
+    title_font_color='#111111',
+)
+fig5.update_yaxes(gridcolor='#EEEEEE', range=[0, 60])
+st.plotly_chart(fig5, use_container_width=True)
