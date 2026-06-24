@@ -20,6 +20,25 @@ csv_texto = """edicao,nivel,ouro_pub_fem,ouro_pub_masc,prata_pub_fem,prata_pub_m
 19ª,3,2,4,2,28,6,52,0,4,3,12,6,39
 20ª,3,0,3,5,26,4,45,1,3,1,13,11,41"""
 
+csv_redes = """edicao,nivel,federal,estadual,municipal
+16ª,1,50,15,42
+17ª,1,27,28,60
+18ª,1,38,12,65
+19ª,1,43,17,56
+20ª,1,30,15,52
+16ª,2,26,5,15
+17ª,2,5,22,27
+18ª,2,15,18,39
+19ª,2,6,14,40
+20ª,2,17,6,30
+16ª,3,116,25,0
+17ª,3,83,44,1
+18ª,3,50,25,2
+19ª,3,53,38,3
+20ª,3,56,25,2"""
+
+# ── DataFrames ────────────────────────────────────────────────────────────────
+
 df = pd.read_csv(StringIO(csv_texto))
 
 df['total_pub']   = (df['ouro_pub_fem'] + df['ouro_pub_masc'] +
@@ -38,6 +57,12 @@ df['pct_priv'] = (df['total_priv'] / df['total_geral'] * 100).round(1)
 df['pct_fem']  = (df['total_fem']  / df['total_geral'] * 100).round(1)
 df['pct_masc'] = (df['total_masc'] / df['total_geral'] * 100).round(1)
 
+df_redes = pd.read_csv(StringIO(csv_redes))
+df_redes['total']         = df_redes['federal'] + df_redes['estadual'] + df_redes['municipal']
+df_redes['pct_federal']   = (df_redes['federal']   / df_redes['total'] * 100).round(1)
+df_redes['pct_estadual']  = (df_redes['estadual']  / df_redes['total'] * 100).round(1)
+df_redes['pct_municipal'] = (df_redes['municipal'] / df_redes['total'] * 100).round(1)
+
 # ── Layout ────────────────────────────────────────────────────────────────────
 st.title('📊 Dashboard OBMEP')
 st.markdown('Análise de medalhas da 16ª à 20ª edição')
@@ -50,12 +75,16 @@ nivel_selecionado = st.selectbox(
 
 if nivel_selecionado == 'Nível 1':
     df_filtrado = df[df['nivel'] == 1]
+    df_redes_filtrado = df_redes[df_redes['nivel'] == 1]
 elif nivel_selecionado == 'Nível 2':
     df_filtrado = df[df['nivel'] == 2]
+    df_redes_filtrado = df_redes[df_redes['nivel'] == 2]
 elif nivel_selecionado == 'Nível 3':
     df_filtrado = df[df['nivel'] == 3]
+    df_redes_filtrado = df_redes[df_redes['nivel'] == 3]
 else:
     df_filtrado = df
+    df_redes_filtrado = df_redes
 
 # ── Métricas ──────────────────────────────────────────────────────────────────
 col1, col2, col3 = st.columns(3)
@@ -123,6 +152,7 @@ fig3.update_layout(    plot_bgcolor='white',
     title_font_color='#111111')
 fig3.update_yaxes(gridcolor='#EEEEEE')
 st.plotly_chart(fig3, use_container_width=True)
+
 # ── Gráfico 4 ─────────────────────────────────────────────────────────────────
 por_nivel_edicao = df_filtrado.groupby(['edicao', 'nivel'])['pct_pub'].mean().reset_index()
 por_nivel_edicao['nivel'] = por_nivel_edicao['nivel'].map({
@@ -160,6 +190,7 @@ fig4.update_layout(
 )
 fig4.update_yaxes(gridcolor='#EEEEEE', range=[40, 100])
 st.plotly_chart(fig4, use_container_width=True)
+
 # ── Gráfico 5 ─────────────────────────────────────────────────────────────────
 por_nivel_edicao_priv = df_filtrado.groupby(['edicao', 'nivel'])['pct_priv'].mean().reset_index()
 por_nivel_edicao_priv['nivel'] = por_nivel_edicao_priv['nivel'].map({
@@ -197,3 +228,47 @@ fig5.update_layout(
 )
 fig5.update_yaxes(gridcolor='#EEEEEE', range=[0, 60])
 st.plotly_chart(fig5, use_container_width=True)
+
+# ── Gráfico 6 ─────────────────────────────────────────────────────────────────
+por_rede_publica = df_redes_filtrado.groupby('edicao')[['federal', 'estadual', 'municipal']].sum().reset_index()
+por_rede_publica = por_rede_publica.rename(columns={'federal': 'Federal', 'estadual': 'Estadual', 'municipal': 'Municipal'})
+fig6 = px.bar(
+    por_rede_publica, x='edicao', y=['Federal', 'Estadual', 'Municipal'],
+    title='Medalhas por tipo de escola pública',
+    labels={'edicao': 'Edição', 'value': 'Total', 'variable': 'Rede'},
+    barmode='stack',
+    color_discrete_map={'Federal': '#6A0572', 'Estadual': '#F4A261', 'Municipal': '#2A9D8F'}
+)
+fig6.update_layout(
+    plot_bgcolor='white', paper_bgcolor='white',
+    font=dict(color='#111111', size=13), title_font_color='#111111',
+    hovermode='x unified',
+    xaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111')),
+    yaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111')),
+    legend=dict(font=dict(color='#111111'), title=dict(text='Rede pública', font=dict(color='#111111')))
+)
+fig6.update_yaxes(gridcolor='#EEEEEE')
+st.plotly_chart(fig6, use_container_width=True)
+
+# ── Gráfico 7 ─────────────────────────────────────────────────────────────────
+por_pct_redes = df_redes_filtrado.groupby('edicao')[['federal', 'estadual', 'municipal', 'total']].sum().reset_index()
+por_pct_redes['Federal']   = (por_pct_redes['federal']   / por_pct_redes['total'] * 100).round(1)
+por_pct_redes['Estadual']  = (por_pct_redes['estadual']  / por_pct_redes['total'] * 100).round(1)
+por_pct_redes['Municipal'] = (por_pct_redes['municipal'] / por_pct_redes['total'] * 100).round(1)
+fig7 = px.line(
+    por_pct_redes, x='edicao', y=['Federal', 'Estadual', 'Municipal'],
+    title='Evolução percentual por tipo de escola pública',
+    labels={'edicao': 'Edição', 'value': '% de medalhas', 'variable': 'Rede'},
+    markers=True, line_shape='spline',
+    color_discrete_map={'Federal': '#6A0572', 'Estadual': '#F4A261', 'Municipal': '#2A9D8F'}
+)
+fig7.update_layout(
+    plot_bgcolor='white', paper_bgcolor='white',
+    font=dict(color='#111111', size=13), title_font_color='#111111',
+    hovermode='x unified',
+    xaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111')),
+    yaxis=dict(tickfont=dict(color='#111111'), title_font=dict(color='#111111'), ticksuffix='%'),
+    legend=dict(font=dict(color='#111111'), title=dict(text='Rede pública', font=dict(color='#111111')))
+)
+fig7.update_yaxes(gridcolor='#EEEEEE')
+st.plotly_chart(fig7, use_container_width=True)
